@@ -1,0 +1,16 @@
+plugins {
+    id 'java'
+}
+
+group 'com.osfocus.www'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'io.netty:netty-all:4.1.9.Final'
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
