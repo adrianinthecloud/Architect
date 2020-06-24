@@ -1,0 +1,9 @@
+[submodule "tank"]
+	path = tank
+	url = https://github.com/adrianinthecloud/tank
+[submodule "concurrent"]
+	path = concurrent
+	url = https://github.com/adrianinthecloud/java-concurrent-programming
+[submodule "DesignPatterns"]
+	path = DesignPatterns
+	url = https://github.com/adrianinthecloud/DesignPatterns
