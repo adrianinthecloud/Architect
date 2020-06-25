@@ -14,13 +14,13 @@ import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class MyPoolServer {
+public class PoolServer {
     ExecutorService pool = Executors.newFixedThreadPool(50);
 
     private Selector selector;
 
     public static void main(String[] args) {
-        MyPoolServer server = new MyPoolServer();
+        PoolServer server = new PoolServer();
         try {
             server.initServer(8081);
             server.listen();
@@ -58,16 +58,16 @@ public class MyPoolServer {
                     channel.register(this.selector, SelectionKey.OP_READ);
                 } else if (key.isReadable()) {
                     key.interestOps(key.interestOps()&(~SelectionKey.OP_READ));
-                    pool.execute(new MyThreadHandlerChannel(key));
+                    pool.execute(new ThreadHandlerChannel(key));
                 }
             }
         }
     }
 }
 
-class MyThreadHandlerChannel extends Thread {
+class ThreadHandlerChannel extends Thread {
     private SelectionKey key;
-    MyThreadHandlerChannel(SelectionKey key) {
+    ThreadHandlerChannel(SelectionKey key) {
         this.key = key;
     }
 
