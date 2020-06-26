@@ -15,7 +15,7 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 public class Server {
     private static ChannelGroup clients = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
-    public static void main(String[] args) {
+    public void serverStart() {
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup(10);
 
@@ -34,6 +34,7 @@ public class Server {
                     .bind(8088);
             f.sync();
 
+            ServerFrame.INSTANCE.updateServerMsg("Server started.");
             f.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -67,6 +68,7 @@ public class Server {
                     ctx.close();
                 } else {
                     clients.writeAndFlush(Unpooled.copiedBuffer(sendMsg.getBytes()));
+                    ServerFrame.INSTANCE.updateClientMsg(sendMsg);
                 }
             } finally {
                 if (buf != null && buf.refCnt() == oldCnt+1) {
