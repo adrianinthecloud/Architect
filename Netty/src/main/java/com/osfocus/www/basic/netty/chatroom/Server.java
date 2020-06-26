@@ -73,7 +73,10 @@ public class Server {
 
         @Override
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-            super.exceptionCaught(ctx, cause);
+            cause.printStackTrace();
+
+            Server.clients.remove(ctx.channel());
+            ctx.close();
         }
     }
 }
