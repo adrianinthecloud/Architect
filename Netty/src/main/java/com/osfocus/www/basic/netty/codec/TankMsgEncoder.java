@@ -1,4 +1,4 @@
-package com.osfocus.www.basic.netty.chatroom;
+package com.osfocus.www.basic.netty.codec;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
