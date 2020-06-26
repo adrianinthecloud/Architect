@@ -28,7 +28,7 @@ public class ClientFrame extends Frame {
     }
 
     public void setText(String msg) {
-        ta.setText(ta.getText() + msg + "\n");
+        ta.setText(ta.getText() + msg + System.getProperty("line.separator"));
         tf.setText("");
     }
 
