@@ -59,11 +59,15 @@ public class Server {
                 oldCnt = buf.refCnt();
                 buf.getBytes(buf.readerIndex(), bytes);
                 System.out.println("Client-" + ctx.channel().remoteAddress() + ": " + new String(bytes));
-
-                String sendMsg = ctx.channel().remoteAddress() + ": " + new String(bytes);
-                clients.writeAndFlush(Unpooled.copiedBuffer(sendMsg.getBytes()));
-
-                ctx.writeAndFlush("ACK: Message received.");
+                String s = new String(bytes);
+                String sendMsg = ctx.channel().remoteAddress() + ": " + s;
+                if (s.equalsIgnoreCase("__bye__")) {
+                    System.out.println(ctx.channel().remoteAddress() + " requested to close connection.");
+                    clients.remove(ctx.channel());
+                    ctx.close();
+                } else {
+                    clients.writeAndFlush(Unpooled.copiedBuffer(sendMsg.getBytes()));
+                }
             } finally {
                 if (buf != null && buf.refCnt() == oldCnt+1) {
                     ReferenceCountUtil.release(buf);

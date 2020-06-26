@@ -67,6 +67,10 @@ public class Client {
         channel.writeAndFlush(Unpooled.copiedBuffer(msg.getBytes()));
     }
 
+    public void closeConnect() {
+        this.sendToServer("__bye__");
+    }
+
     public void shutdown() {
         try {
             if (channel != null) {

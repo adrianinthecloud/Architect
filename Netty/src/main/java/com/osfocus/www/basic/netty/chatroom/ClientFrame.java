@@ -3,6 +3,8 @@ package com.osfocus.www.basic.netty.chatroom;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class ClientFrame extends Frame {
     public static final ClientFrame INSTANCE = new ClientFrame();
@@ -21,6 +23,14 @@ public class ClientFrame extends Frame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 client.sendToServer(tf.getText());
+            }
+        });
+
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                client.closeConnect();
+                System.exit(0);
             }
         });
     }
