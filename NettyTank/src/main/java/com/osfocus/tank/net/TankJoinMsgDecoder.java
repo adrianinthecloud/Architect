@@ -16,10 +16,6 @@ public class TankJoinMsgDecoder extends ByteToMessageDecoder {
 
         TankJoinMsg msg = new TankJoinMsg();
 
-//        byte[] bytes = new byte[in.readableBytes()];
-//        in.getBytes(in.readerIndex(), bytes);
-//
-//        msg.parse(bytes);
         msg.x = in.readInt();
         msg.y = in.readInt();
         msg.dir = Dir.values()[in.readInt()];

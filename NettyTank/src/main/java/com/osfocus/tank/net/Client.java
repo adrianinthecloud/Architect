@@ -100,23 +100,10 @@ class ClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println("mschannelRead");
-
         TankJoinMsg tankJoinMsg = (TankJoinMsg) msg;
         if (tankJoinMsg.id.equals(TankFrame.INSTANCE.getMainTank().getId())) return;
 
-        System.out.println("msg = " + msg);
         Tank t = new Tank(tankJoinMsg);
-        System.out.println("t = " + t);
         TankFrame.INSTANCE.addTank(t);
-//        ByteBuf buf = null;
-//        try {
-//            buf = (ByteBuf) msg;
-//            byte[] bytes = new byte[buf.readableBytes()];
-//            buf.getBytes(buf.readerIndex(), bytes);
-//            ClientFrame.INSTANCE.setText(new String(bytes));
-//        } finally {
-//            if (buf != null) ReferenceCountUtil.release(buf);
-//        }
     }
 }
