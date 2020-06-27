@@ -6,10 +6,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.rmi.activation.ActivationSystem;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
 
 public class TankFrame extends Frame {
     static final int GAME_WIDTH = PropertyMgr.getInt("gameWidth"),
@@ -18,10 +16,14 @@ public class TankFrame extends Frame {
 
     Random r = new Random();
 
-    Tank myTank = new Tank(r.nextInt(GAME_WIDTH), r.nextInt(GAME_HEIGHT), Dir.DOWN, Group.GOOD,this);
+    Tank myTank;
     List<Bullet> bullets = new ArrayList<>();
     List<Tank> tanks = new ArrayList<>();
     List<Explode> explodes = new ArrayList<>();
+
+    static {
+        INSTANCE.init();
+    }
 
     public TankFrame() {
         setSize(GAME_WIDTH, GAME_HEIGHT);
@@ -38,6 +40,10 @@ public class TankFrame extends Frame {
                 System.exit(0);
             }
         });
+    }
+
+    private void init() {
+        myTank = new Tank(r.nextInt(GAME_WIDTH), r.nextInt(GAME_HEIGHT), Dir.DOWN, Group.GOOD);
     }
 
     Image offScreenImage = null;
@@ -100,6 +106,11 @@ public class TankFrame extends Frame {
 
     public void addTank(Tank t) {
         this.tanks.add(t);
+    }
+
+    public boolean findTank(UUID uuid) {
+        Tank findTank = this.tanks.stream().filter(t -> t.id.equals(uuid)).findAny().orElse(null);
+        return findTank != null;
     }
 
     class MyKeyListener extends KeyAdapter {

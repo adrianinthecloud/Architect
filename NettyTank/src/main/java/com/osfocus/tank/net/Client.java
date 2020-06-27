@@ -32,6 +32,7 @@ public class Client {
         try {
             ChannelFuture f = b.group(group)
                     .channel(NioSocketChannel.class)
+                    .option(ChannelOption.TCP_NODELAY, true) // disable Nagle's algorithm
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
@@ -100,10 +101,15 @@ class ClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+//        Msg inputMsg = (Msg) msg;
+//        inputMsg.handle();
+//
         TankJoinMsg tankJoinMsg = (TankJoinMsg) msg;
-        if (tankJoinMsg.id.equals(TankFrame.INSTANCE.getMainTank().getId())) return;
+        if (tankJoinMsg.id.equals(TankFrame.INSTANCE.getMainTank().getId()) ||
+            TankFrame.INSTANCE.findTank(tankJoinMsg.id)) return;
 
         Tank t = new Tank(tankJoinMsg);
         TankFrame.INSTANCE.addTank(t);
+        ctx.writeAndFlush(new TankJoinMsg(TankFrame.INSTANCE.getMainTank()));
     }
 }

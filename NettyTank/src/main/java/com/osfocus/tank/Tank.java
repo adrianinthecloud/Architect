@@ -17,25 +17,25 @@ public class Tank {
 
     public Rectangle rect = new Rectangle();
 
-    UUID id = UUID.randomUUID();
+    UUID id;
 
     private Random random = new Random();
     private boolean moving = true;
     private Group group = Group.BAD;
 
-    private TankFrame tf = null;
+    private TankFrame tf = TankFrame.INSTANCE;
 
     private boolean alive = true;
 
-    public Tank(int x, int y, Dir dir, Group group, TankFrame tf) {
+    public Tank(int x, int y, Dir dir, Group group) {
         super();
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.group = group;
-        this.tf = tf;
         rect.width = WIDTH;
         rect.height = HEIGHT;
+        id = UUID.randomUUID();
     }
 
     public Tank(TankJoinMsg msg) {
@@ -45,6 +45,7 @@ public class Tank {
         this.dir = msg.dir;
         this.moving = msg.moving;
         this.group = Group.BAD;
+        this.id = msg.id;
 
         rect.x = this.x;
         rect.y = this.y;
@@ -171,5 +172,21 @@ public class Tank {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Tank{" +
+                "x=" + x +
+                ", y=" + y +
+                ", dir=" + dir +
+                ", rect=" + rect +
+                ", id=" + id +
+                ", random=" + random +
+                ", moving=" + moving +
+                ", group=" + group +
+                ", tf=" + tf +
+                ", alive=" + alive +
+                '}';
     }
 }
