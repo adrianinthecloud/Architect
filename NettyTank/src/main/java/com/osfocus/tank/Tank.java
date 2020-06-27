@@ -1,8 +1,11 @@
 package com.osfocus.tank;
 
+import com.osfocus.tank.net.TankJoinMsg;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Random;
+import java.util.UUID;
 
 public class Tank {
     private int x = 200, y = 200;
@@ -13,6 +16,8 @@ public class Tank {
     public static int HEIGHT = ResourceMgr.badTankD.getHeight();
 
     public Rectangle rect = new Rectangle();
+
+    UUID id = UUID.randomUUID();
 
     private Random random = new Random();
     private boolean moving = true;
@@ -29,6 +34,20 @@ public class Tank {
         this.dir = dir;
         this.group = group;
         this.tf = tf;
+        rect.width = WIDTH;
+        rect.height = HEIGHT;
+    }
+
+    public Tank(TankJoinMsg msg) {
+        super();
+        this.x = msg.x;
+        this.y = msg.y;
+        this.dir = msg.dir;
+        this.moving = msg.moving;
+        this.group = Group.BAD;
+
+        rect.x = this.x;
+        rect.y = this.y;
         rect.width = WIDTH;
         rect.height = HEIGHT;
     }
@@ -144,5 +163,13 @@ public class Tank {
 
     public void setGroup(Group group) {
         this.group = group;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 }

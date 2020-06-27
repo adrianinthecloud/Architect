@@ -1,23 +1,32 @@
 package com.osfocus.tank;
 
-import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.concurrent.TimeUnit;
+import com.osfocus.tank.net.Client;
 
 public class Main {
-    public static void main(String[] args) throws InterruptedException {
-        TankFrame tf = new TankFrame();
+    public static void main(String[] args) {
+        TankFrame tf = TankFrame.INSTANCE;
+        tf.setVisible(true);
 
-        int initTankCount = Integer.parseInt((String) PropertyMgr.get("initTankCount"));
+//        int initTankCount = Integer.parseInt((String) PropertyMgr.get("initTankCount"));
 
-        for (int i = 0; i < initTankCount; i++) {
-            tf.tanks.add(new Tank(50 + i*80, 200, Dir.DOWN, Group.BAD, tf));
-        }
+//        for (int i = 0; i < initTankCount; i++) {
+//            tf.tanks.add(new Tank(50 + i*80, 200, Dir.DOWN, Group.BAD, tf));
+//        }
 
-        while (true) {
-            Thread.sleep(50);
-            tf.repaint();
-        }
+        new Thread(()->new Audio("audio/war1.wav").loop()).start();
+
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(25);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                tf.repaint();
+            }
+        }).start();
+
+        Client c = new Client();
+        c.connect();
     }
 }

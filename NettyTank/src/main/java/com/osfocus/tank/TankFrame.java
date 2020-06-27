@@ -5,18 +5,23 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.rmi.activation.ActivationSystem;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 public class TankFrame extends Frame {
-    private final Tank myTank = new Tank(200, 400, Dir.DOWN, Group.GOOD,this);
+    static final int GAME_WIDTH = PropertyMgr.getInt("gameWidth"),
+                             GAME_HEIGHT = PropertyMgr.getInt("gameHeight");
+    public static final TankFrame INSTANCE = new TankFrame();
+
+    Random r = new Random();
+
+    Tank myTank = new Tank(r.nextInt(GAME_WIDTH), r.nextInt(GAME_HEIGHT), Dir.DOWN, Group.GOOD,this);
     List<Bullet> bullets = new ArrayList<>();
     List<Tank> tanks = new ArrayList<>();
     List<Explode> explodes = new ArrayList<>();
-
-    static final int GAME_WIDTH = PropertyMgr.getInt("gameWidth"),
-                     GAME_HEIGHT = PropertyMgr.getInt("gameHeight");
 
     public TankFrame() {
         setSize(GAME_WIDTH, GAME_HEIGHT);
@@ -87,6 +92,14 @@ public class TankFrame extends Frame {
                 bullets.get(i).collideWith(tanks.get(j));
             }
         }
+    }
+
+    public Tank getMainTank() {
+        return this.myTank;
+    }
+
+    public void addTank(Tank t) {
+        this.tanks.add(t);
     }
 
     class MyKeyListener extends KeyAdapter {
