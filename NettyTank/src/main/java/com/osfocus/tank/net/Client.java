@@ -14,15 +14,15 @@ import io.netty.util.ReferenceCountUtil;
 import java.util.concurrent.TimeUnit;
 
 public class Client {
+    public static final Client INSTANCE = new Client();
+
     private final static String SERVER = "localhost";
     private final static int PORT = 8088;
     private Channel channel;
 
     private EventLoopGroup group = null;
 
-    public Client() {
-
-    }
+    private Client() {}
 
     public void connect() {
         group = new NioEventLoopGroup(1);
@@ -93,17 +93,19 @@ public class Client {
     }
 }
 
-class ClientHandler extends ChannelInboundHandlerAdapter {
+class ClientHandler extends SimpleChannelInboundHandler<Msg> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         ctx.writeAndFlush(new TankJoinMsg(TankFrame.INSTANCE.getMainTank()));
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+    public void channelRead0(ChannelHandlerContext ctx, Msg msg) throws Exception {
 //        Msg inputMsg = (Msg) msg;
 //        inputMsg.handle();
-//
+
+        msg.handle();
+
         TankJoinMsg tankJoinMsg = (TankJoinMsg) msg;
         if (tankJoinMsg.id.equals(TankFrame.INSTANCE.getMainTank().getId()) ||
             TankFrame.INSTANCE.findTank(tankJoinMsg.id)) return;
