@@ -11,30 +11,24 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-public class TankDirChangedMsg extends Msg {
+public class TankStopMsg extends Msg {
     public int x, y;
-    public Dir dir;
     UUID id;
 
-    public TankDirChangedMsg() {};
+    public TankStopMsg() {}
 
-    public TankDirChangedMsg(UUID id, int x, int y, Dir dir) {
+    public TankStopMsg(UUID id, int x, int y) {
         this.id = id;
         this.x = x;
         this.y = y;
-        this.dir = dir;
     }
 
     @Override
     public void handle() {
         if (id.equals(TankFrame.INSTANCE.getMainTank().getId())) return;
-
         Tank t = TankFrame.INSTANCE.getTank(id);
         if (t != null) {
-            t.setDir(dir);
-            if (!t.isMoving()) {
-                t.setMoving(true);
-            }
+            t.setMoving(false);
             t.setX(x);
             t.setY(y);
         }
@@ -49,7 +43,6 @@ public class TankDirChangedMsg extends Msg {
         try {
             dos.writeInt(x);
             dos.writeInt(y);
-            dos.writeInt(dir.ordinal());
             dos.writeLong(id.getMostSignificantBits());
             dos.writeLong(id.getLeastSignificantBits());
             dos.flush();
@@ -82,22 +75,20 @@ public class TankDirChangedMsg extends Msg {
         ByteBuf buf = Unpooled.copiedBuffer(bytes);
         x = buf.readInt();
         y = buf.readInt();
-        dir = Dir.values()[buf.readInt()];
         id = new UUID(buf.readLong(), buf.readLong());
     }
 
     @Override
     public String toString() {
-        return "TankDirChangedMsg{" +
+        return "TankStopMsg{" +
                 "x=" + x +
                 ", y=" + y +
-                ", dir=" + dir +
                 ", id=" + id +
                 '}';
     }
 
     @Override
     public MsgType getMsgType() {
-        return MsgType.TankDirChanged;
+        return MsgType.TankStop;
     }
 }

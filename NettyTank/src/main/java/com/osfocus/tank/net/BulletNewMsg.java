@@ -1,8 +1,6 @@
 package com.osfocus.tank.net;
 
-import com.osfocus.tank.Dir;
-import com.osfocus.tank.Tank;
-import com.osfocus.tank.TankFrame;
+import com.osfocus.tank.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -11,14 +9,14 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-public class TankDirChangedMsg extends Msg {
+public class BulletNewMsg extends Msg {
     public int x, y;
     public Dir dir;
     UUID id;
 
-    public TankDirChangedMsg() {};
+    public BulletNewMsg() {};
 
-    public TankDirChangedMsg(UUID id, int x, int y, Dir dir) {
+    public BulletNewMsg(UUID id, int x, int y, Dir dir) {
         this.id = id;
         this.x = x;
         this.y = y;
@@ -28,16 +26,7 @@ public class TankDirChangedMsg extends Msg {
     @Override
     public void handle() {
         if (id.equals(TankFrame.INSTANCE.getMainTank().getId())) return;
-
-        Tank t = TankFrame.INSTANCE.getTank(id);
-        if (t != null) {
-            t.setDir(dir);
-            if (!t.isMoving()) {
-                t.setMoving(true);
-            }
-            t.setX(x);
-            t.setY(y);
-        }
+        TankFrame.INSTANCE.bullets.add(new Bullet(x, y, dir, Group.BAD));
     }
 
     @Override
@@ -88,7 +77,7 @@ public class TankDirChangedMsg extends Msg {
 
     @Override
     public String toString() {
-        return "TankDirChangedMsg{" +
+        return "BulletNewMsg{" +
                 "x=" + x +
                 ", y=" + y +
                 ", dir=" + dir +
@@ -98,6 +87,6 @@ public class TankDirChangedMsg extends Msg {
 
     @Override
     public MsgType getMsgType() {
-        return MsgType.TankDirChanged;
+        return MsgType.BulletNew;
     }
 }

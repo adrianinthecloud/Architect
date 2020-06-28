@@ -1,5 +1,8 @@
 package com.osfocus.tank;
 
+import com.osfocus.tank.net.BulletNewMsg;
+import com.osfocus.tank.net.Client;
+import com.osfocus.tank.net.TankDieMsg;
 import com.osfocus.tank.net.TankJoinMsg;
 
 import java.awt.*;
@@ -25,7 +28,7 @@ public class Tank {
 
     private TankFrame tf = TankFrame.INSTANCE;
 
-    private boolean alive = true;
+    public boolean alive = true;
 
     public Tank(int x, int y, Dir dir, Group group) {
         super();
@@ -119,7 +122,8 @@ public class Tank {
     public void fire() {
         int bX = this.x + WIDTH/2 - Bullet.WIDTH/2;
         int bY = this.y + HEIGHT/2 - Bullet.HEIGHT/2;
-        tf.bullets.add(new Bullet(bX, bY, this.dir, this.group, tf));
+        tf.bullets.add(new Bullet(bX, bY, this.dir, this.group));
+        Client.INSTANCE.channel.writeAndFlush(new BulletNewMsg(id, x, y, dir));
     }
 
     public Dir getDir() {

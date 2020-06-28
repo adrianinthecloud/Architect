@@ -2,6 +2,7 @@ package com.osfocus.tank;
 
 import com.osfocus.tank.net.Client;
 import com.osfocus.tank.net.TankDirChangedMsg;
+import com.osfocus.tank.net.TankStopMsg;
 
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -14,15 +15,15 @@ import java.util.List;
 
 public class TankFrame extends Frame {
     static final int GAME_WIDTH = PropertyMgr.getInt("gameWidth"),
-                             GAME_HEIGHT = PropertyMgr.getInt("gameHeight");
+                     GAME_HEIGHT = PropertyMgr.getInt("gameHeight");
     public static final TankFrame INSTANCE = new TankFrame();
 
     Random r = new Random();
 
     Tank myTank;
-    List<Bullet> bullets = new ArrayList<>();
-    List<Tank> tanks = new ArrayList<>();
-    List<Explode> explodes = new ArrayList<>();
+    public List<Bullet> bullets = new ArrayList<>();
+    public List<Tank> tanks = new ArrayList<>();
+    public List<Explode> explodes = new ArrayList<>();
 
     static {
         INSTANCE.init();
@@ -76,7 +77,7 @@ public class TankFrame extends Frame {
         g.drawString("Number of Enemies: " + tanks.size(), 10, 80);
         g.setColor(c);
 
-        myTank.paint(g);
+        if (myTank.alive) myTank.paint(g);
         for (int i = 0; i < bullets.size(); i++) {
             bullets.get(i).paint(g);
         }
@@ -185,6 +186,10 @@ public class TankFrame extends Frame {
 
             if (!bL && !bU && !bR && !bD) {
                 myTank.setMoving(false);
+                Client.INSTANCE.channel
+                        .writeAndFlush(new TankStopMsg(myTank.getId(), myTank.getX(),
+                                myTank.getY()));
+
             } else {
                 Client.INSTANCE.channel
                         .writeAndFlush(new TankDirChangedMsg(myTank.getId(), myTank.getX(),
