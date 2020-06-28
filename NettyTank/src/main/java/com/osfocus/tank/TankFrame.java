@@ -1,5 +1,8 @@
 package com.osfocus.tank;
 
+import com.osfocus.tank.net.Client;
+import com.osfocus.tank.net.TankDirChangedMsg;
+
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -108,9 +111,13 @@ public class TankFrame extends Frame {
         this.tanks.add(t);
     }
 
-    public boolean findTank(UUID uuid) {
-        Tank findTank = this.tanks.stream().filter(t -> t.id.equals(uuid)).findAny().orElse(null);
-        return findTank != null;
+    public Tank getTank(UUID uuid) {
+        Tank targetTank = this.tanks.stream().filter(t -> t.id.equals(uuid)).findAny().orElse(null);
+        return targetTank;
+    }
+
+    public boolean containTank(UUID uuid) {
+        return getTank(uuid) != null;
     }
 
     class MyKeyListener extends KeyAdapter {
@@ -178,6 +185,10 @@ public class TankFrame extends Frame {
 
             if (!bL && !bU && !bR && !bD) {
                 myTank.setMoving(false);
+            } else {
+                Client.INSTANCE.channel
+                        .writeAndFlush(new TankDirChangedMsg(myTank.getId(), myTank.getX(),
+                                                            myTank.getY(), myTank.getDir()));
             }
         }
     }

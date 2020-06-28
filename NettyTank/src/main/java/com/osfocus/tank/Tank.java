@@ -95,9 +95,9 @@ public class Tank {
                 break;
         }
 
-        if (this.group == Group.BAD && random.nextInt(100) > 95) this.fire();;
+//        if (this.group == Group.BAD && random.nextInt(100) > 95) this.fire();;
 
-        if (group == Group.BAD && random.nextInt(100) > 95) randomDir();
+//        if (group == Group.BAD && random.nextInt(100) > 95) randomDir();
 
         boundsCheck();
 

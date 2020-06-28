@@ -1,15 +1,11 @@
 import com.osfocus.tank.Dir;
 import com.osfocus.tank.Group;
-import com.osfocus.tank.net.MsgType;
-import com.osfocus.tank.net.TankJoinMsg;
-import com.osfocus.tank.net.TankJoinMsgDecoder;
-import com.osfocus.tank.net.TankJoinMsgEncoder;
+import com.osfocus.tank.net.*;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.embedded.EmbeddedChannel;
 
 import java.util.UUID;
 
@@ -22,18 +18,18 @@ public class TankJoinMsgCodecTest {
 
 
         UUID id = UUID.randomUUID();
-        TankJoinMsg msg = new TankJoinMsg(5, 10, Dir.DOWN, true, Group.BAD, id);
+        Msg msg = new TankJoinMsg(5, 10, Dir.DOWN, true, Group.BAD, id);
         ch.pipeline()
-                .addLast(new TankJoinMsgEncoder());
+                .addLast(new MsgEncoder());
 
         ch.writeOutbound(msg);
 
         ByteBuf buf = (ByteBuf)ch.readOutbound();
-//        MsgType msgType = MsgType.values()[buf.readInt()];
-//        assertEquals(MsgType.TankJoin, msgType);
-//
-//        int length = buf.readInt();
-//        assertEquals(33, length);
+        MsgType msgType = MsgType.values()[buf.readInt()];
+        assertEquals(MsgType.TankJoin, msgType);
+
+        int length = buf.readInt();
+        assertEquals(33, length);
 
         int x = buf.readInt();
         int y = buf.readInt();
@@ -57,11 +53,14 @@ public class TankJoinMsgCodecTest {
         EmbeddedChannel ch = new EmbeddedChannel();
 
         UUID id = UUID.randomUUID();
-        TankJoinMsg msg = new TankJoinMsg(5, 10, Dir.DOWN, true, Group.BAD, id);
+        Msg msg = new TankJoinMsg(5, 10, Dir.DOWN, true, Group.BAD, id);
 
-        ch.pipeline().addLast(new TankJoinMsgDecoder());
+        ch.pipeline().addLast(new MsgDecoder());
         ByteBuf buf = Unpooled.buffer();
-        buf.writeBytes(msg.toBytes());
+        buf.writeInt(msg.getMsgType().ordinal());
+        byte[] bytes = msg.toBytes();
+        buf.writeInt(bytes.length);
+        buf.writeBytes(bytes);
 
         ch.writeInbound(buf.duplicate());
 

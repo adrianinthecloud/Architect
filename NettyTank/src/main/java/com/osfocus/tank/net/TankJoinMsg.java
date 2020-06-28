@@ -52,7 +52,12 @@ public class TankJoinMsg extends Msg {
 
 	@Override
 	public void handle() {
-//		if (this.id.equals(TankFrame.INSTANCE.getMainTank().getId()) )
+		if (id.equals(TankFrame.INSTANCE.getMainTank().getId()) ||
+				TankFrame.INSTANCE.containTank(id)) return;
+
+		Tank t = new Tank(this);
+		TankFrame.INSTANCE.addTank(t);
+		Client.INSTANCE.channel.writeAndFlush(new TankJoinMsg(TankFrame.INSTANCE.getMainTank()));
 	}
 
 	@Override

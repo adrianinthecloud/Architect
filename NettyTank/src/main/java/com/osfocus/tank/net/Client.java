@@ -1,15 +1,12 @@
 package com.osfocus.tank.net;
 
-import com.osfocus.tank.Tank;
 import com.osfocus.tank.TankFrame;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.ReferenceCountUtil;
 
 import java.util.concurrent.TimeUnit;
 
@@ -18,7 +15,7 @@ public class Client {
 
     private final static String SERVER = "localhost";
     private final static int PORT = 8088;
-    private Channel channel;
+    public Channel channel;
 
     private EventLoopGroup group = null;
 
@@ -37,8 +34,8 @@ public class Client {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline pipeline = ch.pipeline();
-                            pipeline.addLast(new TankJoinMsgEncoder())
-                                    .addLast(new TankJoinMsgDecoder())
+                            pipeline.addLast(new MsgEncoder())
+                                    .addLast(new MsgDecoder())
                                     .addLast(new ClientHandler());
                         }
                     })
@@ -101,17 +98,6 @@ class ClientHandler extends SimpleChannelInboundHandler<Msg> {
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, Msg msg) throws Exception {
-//        Msg inputMsg = (Msg) msg;
-//        inputMsg.handle();
-
         msg.handle();
-
-        TankJoinMsg tankJoinMsg = (TankJoinMsg) msg;
-        if (tankJoinMsg.id.equals(TankFrame.INSTANCE.getMainTank().getId()) ||
-            TankFrame.INSTANCE.findTank(tankJoinMsg.id)) return;
-
-        Tank t = new Tank(tankJoinMsg);
-        TankFrame.INSTANCE.addTank(t);
-        ctx.writeAndFlush(new TankJoinMsg(TankFrame.INSTANCE.getMainTank()));
     }
 }

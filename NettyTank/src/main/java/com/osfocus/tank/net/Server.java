@@ -9,8 +9,6 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
-import static io.netty.channel.ChannelOption.TCP_NODELAY;
-
 public class Server {
     private static ChannelGroup clients = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
@@ -28,8 +26,8 @@ public class Server {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline pipeline = ch.pipeline();
-                            pipeline.addLast(new TankJoinMsgEncoder())
-                                    .addLast(new TankJoinMsgDecoder())
+                            pipeline.addLast(new MsgEncoder())
+                                    .addLast(new MsgDecoder())
                                     .addLast(new ServerChildHandler());
                         }
                     })
@@ -62,7 +60,7 @@ public class Server {
 //                ReferenceCountUtil.release(msg);
 //            }
             ServerFrame.INSTANCE.updateClientMsg(ctx.channel().id() + " sent message: " + msg);
-            clients.writeAndFlush((TankJoinMsg) msg);
+            clients.writeAndFlush(msg);
 //            ctx.writeAndFlush(Unpooled.copiedBuffer("test".getBytes()));
 
 //            ByteBuf buf = null;
