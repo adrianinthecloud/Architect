@@ -7,3 +7,6 @@
 [submodule "DesignPatterns"]
 	path = DesignPatterns
 	url = https://github.com/adrianinthecloud/DesignPatterns
+[submodule "AlgorithmAndDataStructure"]
+	path = AlgorithmAndDataStructure
+	url = https://github.com/adrianinthecloud/Algorithm-and-Data-Structure

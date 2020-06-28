@@ -12,7 +12,8 @@
         <module>concurrent</module>
         <module>tank</module>
         <module>DesignPatterns</module>
-        <module>Algorithm</module>
+        <module>AlgorithmAndDataStructure</module>
+        <module>NettyTank</module>
     </modules>
     <properties>
         <maven.compiler.target>1.8</maven.compiler.target>
